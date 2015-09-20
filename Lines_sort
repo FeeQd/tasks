@@ -1,0 +1,56 @@
+#include <iostream>
+
+using namespace std;
+
+struct point {
+	int x;
+	int chng;
+	bool operator<(point to_check) {
+		if (x < to_check.x)
+			return true;
+		return false;
+	}
+};
+
+void qsort(point* a, int l, int r) {
+	if (l >= r)
+		return;
+	int i = l;
+	int j = r;
+	point x = a[(i + j) / 2];
+	while (i <= j) {
+		while (a[i] < x) i++;
+		while (x < a[j]) j--;
+		if (i <= j) {
+			swap(a[i], a[j]);
+			i++;
+			j--;
+		}
+	}
+	qsort(a, l, j);
+	qsort(a, i , r );
+}
+
+int main() {
+
+	int n;
+	int lvl = 1;
+	int length = 0;
+	cin >> n;
+	n = 2 * n;
+	point* points = new point[n];
+	for (int i = 0; i < n; i += 2) {
+		cin >> points[i].x >> points[i + 1].x;
+		points[i].chng = 1;
+		points[i + 1].chng = -1;
+	}
+	qsort(points, 0, n - 1);
+	
+	int ind = 0;
+	for (int i = 0; i < n - 1; i++) {
+		if (lvl == 1) length += points[i + 1].x - points[i].x;
+		lvl += points[i + 1].chng;
+	}
+	cout << length;
+	return 0;
+}
